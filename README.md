@@ -1,7 +1,7 @@
 # GTL Result Viewer
 
 This is a demo app showing results produced by GTL.
-it's rudimentary as it is and hard o digest.
+As it is it just prints out data.
 
 Please make it more consumable for the viewer.
 
