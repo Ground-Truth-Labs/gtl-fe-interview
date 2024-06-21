@@ -62,8 +62,16 @@ const data: Result[] = [
     patientId: "9782e",
     scannedAt: new Date("2021-08-03T12:00:00Z"),
     score: 0.25,
-    event: Event.Conclusion,
+    event: Event.Baseline,
     sampleQuality: Quality.Medium,
+    dateOfBirth: "1981-04-12",
+  },
+  {
+    patientId: "9782e",
+    scannedAt: new Date("2021-08-21T12:00:00Z"),
+    score: 0.21,
+    event: Event.FollowUp,
+    sampleQuality: Quality.High,
     dateOfBirth: "1981-04-12",
   },
 ];
