@@ -15,6 +15,12 @@ enum Event {
     Conclusion = "Conclusion"
 }
 
+const eventOrder = {
+    [Event.Baseline]: 1,
+    [Event.FollowUp]: 2,
+    [Event.Conclusion]: 3,
+}
+
 interface Result {
   patientId: string; // the client specific identifier
   scannedAt: Date; // the time at which the sample was digitally scanned
@@ -76,21 +82,57 @@ const data: Result[] = [
   },
 ];
 
-export default function Results() {
-  return (
-    <div className="results">
-      {data.map((item) => {
-        return (
-          <>
-            <p>PatientID: {item.patientId}</p>
-            <p>Scanned At: {item.scannedAt.valueOf()}</p>
-            <p>Score: {item.score}</p>
-            <p>Event: {item.event}</p>
-            <p>Sample Quality: {item.sampleQuality}</p>
-            <p>Date of Birth: {item.dateOfBirth}</p>
-          </>
-        );
-      })}
+const perPatientData = data.reduce<Record<string, Omit<Result, "dateOfBirth" | "patientId">[]>>((acc, item) => {
+    const { patientId, dateOfBirth, ...rest } = item
+    if (patientId in acc) {
+        acc[patientId].push(rest)
+    } else {
+        acc[patientId] = [rest]
+    }
+    return acc
+}, {})
+
+const qualityColor: Record<Quality, string> = {
+    [Quality.High]: '#393',
+    [Quality.Medium]: '#963',
+    [Quality.Low]: '#933',
+}
+
+export const PatientResults = ({
+    patientId,
+    results
+}: { patientId: string, results: { score: number, scannedAt: Date, event: Event, sampleQuality: Quality }[]}) => {
+    return (
+    <div className='result-card'>
+        <p><span className="label">PatientID</span> <span>{patientId}</span></p>
+        <div className="patient-events">
+            {results.sort((a, b) => eventOrder[a.event] - eventOrder[b.event]).map(({ score, scannedAt, event, sampleQuality }) => (
+                <div className="event">
+                    <div className="event-header">
+                    <h4>{event}</h4>
+                    <p className="event-date">{scannedAt.toLocaleDateString()}</p>
+                    </div>
+                    <h2>{score}</h2>
+                    <p>Quality <span style={{color: qualityColor[sampleQuality]}}><strong>{sampleQuality.toUpperCase()}</strong></span></p>
+                </div>
+            ))}
+            { Array.from({ length: 3 - results.length }).map((_, i) => (
+                <div className="event" style={{background: "#FAFAFA"}}><p style={{color: "#AAA"}}>Missing</p></div>))
+            }
+        </div>
     </div>
-  );
+);
+}
+
+
+export default function Results() {
+    return (
+        <div className="results">
+        {Object.entries(perPatientData).map(([patientId, patientResults]) => {
+            return (
+                <PatientResults patientId={patientId} results={patientResults} />
+            );
+        })}
+        </div>
+    )
 }
