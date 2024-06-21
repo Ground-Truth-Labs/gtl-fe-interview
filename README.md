@@ -20,7 +20,7 @@ npm run dev
 ## Design Language
 
 We're interested in well communicated information with a modern look and feel.
-How you approach is up to you, we use https://ui.shadcn.com/ as a design language inspiration and would be happy for you to do the same.
+How you approach is up to you, we use https://ui.shadcn.com/ and reference geist as a design system https://vercel.com/geist/text, we're hapy for you to do the same.
 
 ## Codebase
 
